@@ -1,5 +1,5 @@
 {
-  "name": "RepForm AI",
+  "name": "Kayagni",
   "description": "AI-powered squat tracking application with Node.js and MongoDB backend, user authentication, and real-time posture analysis.",
   "requestFramePermissions": [
     "camera"
