@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { User, DbStatus } from "../types";
-import { LogIn, LogOut, Database, UserCheck, Sparkles, Activity } from "lucide-react";
+import { LogIn, LogOut, Database, UserCheck, Sparkles, Activity, ClipboardList } from "lucide-react";
 
 interface TopbarProps {
   activeTab: "live" | "analytics" | "settings";
@@ -10,6 +10,7 @@ interface TopbarProps {
   onOpenAuth: () => void;
   onLogout: () => void;
   onQuickDemo: () => void;
+  onOpenSurvey?: () => void;
 }
 
 export const Topbar: React.FC<TopbarProps> = ({
@@ -20,6 +21,7 @@ export const Topbar: React.FC<TopbarProps> = ({
   onOpenAuth,
   onLogout,
   onQuickDemo,
+  onOpenSurvey,
 }) => {
   const [time, setTime] = useState<string>("--:--:--");
 
@@ -46,10 +48,10 @@ export const Topbar: React.FC<TopbarProps> = ({
       {/* Brand */}
       <div className="flex items-center gap-3">
         <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#35d0e8] to-[#1a8fa3] flex items-center justify-center font-display font-bold text-[#03181e] text-sm shadow-sm shadow-[#35d0e8]/30">
-          R
+          K
         </div>
         <div className="font-display font-bold text-base tracking-wider text-[#eaf3fa]">
-          REP<span className="text-[#35d0e8]">FORM</span> <span className="text-xs text-[#9db3c2] font-mono">AI</span>
+          KAY<span className="text-[#35d0e8]">AGNI</span> <span className="text-xs text-[#9db3c2] font-mono">AI</span>
         </div>
       </div>
 
@@ -92,7 +94,21 @@ export const Topbar: React.FC<TopbarProps> = ({
       </nav>
 
       {/* Right User & Database Zone */}
-      <div className="flex items-center gap-3 md:gap-4 text-xs">
+      <div className="flex items-center gap-2 md:gap-3 text-xs">
+        {/* SIH Survey Button */}
+        {onOpenSurvey && (
+          <button
+            type="button"
+            onClick={onOpenSurvey}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#241c10] border border-[#f5a83c]/50 text-[#f5a83c] hover:bg-[#342714] transition-colors shadow-sm"
+            title="Smart India Hackathon 2026 Survey Report (Due 11 Oct)"
+          >
+            <ClipboardList className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Survey Link</span>
+            <span className="px-1 py-0.2 rounded text-[10px] bg-[#f5a83c]/20 text-[#f7d6a5] font-mono">11 Oct</span>
+          </button>
+        )}
+
         {/* DB Status Badge */}
         <div
           className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#1a3448] bg-[#091522]"

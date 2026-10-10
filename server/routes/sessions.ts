@@ -1,6 +1,6 @@
-import { Router, Response } from "express";
-import { WorkoutSession, IWorkoutSession } from "../db.js";
-import { requireAuth, AuthRequest } from "../auth.js";
+import { Router, type Response } from "express";
+import { WorkoutSession, type IWorkoutSession } from "../db.ts";
+import { requireAuth, type AuthRequest } from "../auth.ts";
 
 const router = Router();
 

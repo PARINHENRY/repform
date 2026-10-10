@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { Request, Response, NextFunction } from "express";
-import { User, IUser } from "./db.js";
+import type { Request, Response, NextFunction } from "express";
+import { User, type IUser } from "./db.ts";
 
-const JWT_SECRET = process.env.JWT_SECRET || "repform-ai-secure-jwt-secret-key-2026";
+const JWT_SECRET = process.env.JWT_SECRET || "kayagni-ai-secure-jwt-secret-key-2026";
 const TOKEN_EXPIRY = "30d";
 
 export interface AuthRequest extends Request {

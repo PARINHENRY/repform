@@ -105,7 +105,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <div className="text-[11px] text-[#5c7a8e] leading-normal">
               To connect to your own cloud MongoDB cluster, set <code className="text-[#35d0e8]">MONGODB_URI</code> in
-              environment variables (e.g. <code className="text-[#9db3c2]">mongodb+srv://user:pass@cluster.mongodb.net/repform</code>).
+              environment variables (e.g. <code className="text-[#9db3c2]">mongodb+srv://user:pass@cluster.mongodb.net/kayagni</code>).
             </div>
           </div>
 

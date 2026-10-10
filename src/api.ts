@@ -7,11 +7,12 @@ import {
   User,
 } from "./types";
 
-const TOKEN_KEY = "repform_jwt_token";
+const TOKEN_KEY = "kayagni_jwt_token";
+const LEGACY_TOKEN_KEY = "repform_jwt_token";
 
 export function getStoredToken(): string | null {
   try {
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY) || localStorage.getItem(LEGACY_TOKEN_KEY);
   } catch {
     return null;
   }
@@ -28,6 +29,7 @@ export function setStoredToken(token: string): void {
 export function clearStoredToken(): void {
   try {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(LEGACY_TOKEN_KEY);
   } catch {
     // Ignore localStorage errors
   }

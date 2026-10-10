@@ -1,6 +1,9 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, type Document, type Model } from "mongoose";
 import fs from "fs";
 import path from "path";
+
+// Fail fast on disconnected DB operations rather than buffering indefinitely
+mongoose.set("bufferCommands", false);
 
 export interface IUser {
   _id: string;
@@ -57,7 +60,7 @@ export function getDbStatus(): DbStatus {
 // Fallback Embedded Store (Active when MONGODB_URI is not set or offline)
 // -------------------------------------------------------------
 const DATA_DIR = path.join(process.cwd(), ".data");
-const DB_FILE = path.join(DATA_DIR, "repform_db.json");
+const DB_FILE = path.join(DATA_DIR, "kayagni_db.json");
 
 interface LocalData {
   users: IUser[];

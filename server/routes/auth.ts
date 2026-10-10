@@ -1,6 +1,6 @@
-import { Router, Response } from "express";
-import { User } from "../db.js";
-import { comparePassword, generateToken, hashPassword, requireAuth, AuthRequest } from "../auth.js";
+import { Router, type Response } from "express";
+import { User } from "../db.ts";
+import { comparePassword, generateToken, hashPassword, requireAuth, type AuthRequest } from "../auth.ts";
 
 const router = Router();
 
@@ -96,7 +96,7 @@ router.post("/login", async (req: AuthRequest, res: Response) => {
 // -------------------------------------------------------------
 router.post("/demo", async (req: AuthRequest, res: Response) => {
   try {
-    const demoEmail = "demo@repform.ai";
+    const demoEmail = "demo@kayagni.ai";
     let user = await User.findOne({ email: demoEmail });
 
     if (!user) {

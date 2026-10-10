@@ -15,6 +15,7 @@ import { PoseTracker } from "./components/PoseTracker";
 import { AuthModal } from "./components/AuthModal";
 import { AnalyticsModal } from "./components/AnalyticsModal";
 import { SettingsModal } from "./components/SettingsModal";
+import { SurveyModal } from "./components/SurveyModal";
 import { CheckCircle2 } from "lucide-react";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showSurveyModal, setShowSurveyModal] = useState(true);
 
   // User & DB Status
   const [user, setUser] = useState<User | null>(null);
@@ -302,6 +304,7 @@ export default function App() {
         onOpenAuth={() => setShowAuthModal(true)}
         onLogout={handleLogout}
         onQuickDemo={handleQuickDemo}
+        onOpenSurvey={() => setShowSurveyModal(true)}
       />
 
       {/* Main Grid Layout */}
@@ -353,6 +356,11 @@ export default function App() {
       )}
 
       {/* Modals */}
+      <SurveyModal
+        isOpen={showSurveyModal}
+        onClose={() => setShowSurveyModal(false)}
+      />
+
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}

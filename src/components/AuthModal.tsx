@@ -90,7 +90,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         {/* Header */}
         <div className="flex items-center gap-2 mb-1">
           <div className="w-6 h-6 rounded bg-gradient-to-br from-[#35d0e8] to-[#1a8fa3] flex items-center justify-center font-display font-bold text-[#03181e] text-xs">
-            R
+            K
           </div>
           <h2 className="font-display text-lg font-bold text-[#eaf3fa] tracking-wide">
             {mode === "login" ? "Athlete Sign In" : "Create Athlete Account"}
