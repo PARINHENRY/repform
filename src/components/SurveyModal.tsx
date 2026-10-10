@@ -1,17 +1,36 @@
-import React, { useState } from "react";
-import { ExternalLink, Copy, Check, X, AlertCircle } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ExternalLink, Copy, Check, X, AlertCircle, Edit2, Save } from "lucide-react";
 
 interface SurveyModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const STORAGE_KEY = "kayagni_survey_link";
+const DEFAULT_LINK =
+  "https://docs.google.com/document/d/1Ev_-UsNTTqAOYSc2nMYPMRRKJLREFG40-YMGBb-azKs/edit?usp=sharing";
+
 export const SurveyModal: React.FC<SurveyModalProps> = ({ isOpen, onClose }) => {
   const [copied, setCopied] = useState(false);
-  // Default Google Forms survey link for SIH26196 / Kayagni
-  const [surveyLink, setSurveyLink] = useState(
-    "https://forms.gle/kayagni-sih2026-surveyhttps://docs.google.com/document/d/1Ev_-UsNTTqAOYSc2nMYPMRRKJLREFG40-YMGBb-azKs/edit?usp=sharing"
-  );
+  const [surveyLink, setSurveyLink] = useState(() => {
+    try {
+      return localStorage.getItem(STORAGE_KEY) || DEFAULT_LINK;
+    } catch {
+      return DEFAULT_LINK;
+    }
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedLink, setEditedLink] = useState(surveyLink);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        setSurveyLink(stored);
+        setEditedLink(stored);
+      }
+    } catch {}
+  }, []);
 
   if (!isOpen) return null;
 
@@ -21,8 +40,19 @@ export const SurveyModal: React.FC<SurveyModalProps> = ({ isOpen, onClose }) => 
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleSaveLink = () => {
+    const trimmed = editedLink.trim();
+    if (trimmed) {
+      setSurveyLink(trimmed);
+      try {
+        localStorage.setItem(STORAGE_KEY, trimmed);
+      } catch {}
+    }
+    setIsEditing(false);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in duration-150">
       <div className="bg-[#0e1f2e] border border-[#1a3448] w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
         {/* Close icon */}
         <button
@@ -44,40 +74,100 @@ export const SurveyModal: React.FC<SurveyModalProps> = ({ isOpen, onClose }) => 
               Before You Continue to Prototype
             </h3>
             <span className="text-[11px] text-[#f5a83c] font-mono font-medium">
-              SIH 2026 • Kayagni Survey
+              SIH 2026 • Survey Link
             </span>
           </div>
         </div>
 
         {/* Message requested by user */}
         <p className="text-xs text-[#9db3c2] leading-relaxed mb-4">
-          Sorry for the inconvenience! Here is the survey report, as the one in the PDF was not
-          translated into a hyperlink.
+          Sorry for the inconvenience! Before you continue to prototype, here's the survey link as
+          the one in the PDF was not translated into a hyperlink.
         </p>
 
         {/* Attached Survey Link Box */}
         <div className="bg-[#091522] border border-[#1a3448] rounded-xl p-3 mb-5 space-y-2">
           <div className="flex items-center justify-between text-[11px]">
             <span className="text-[#5c7a8e] font-mono">Survey Link:</span>
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="text-[#35d0e8] hover:underline flex items-center gap-1 font-mono text-[11px]"
-            >
-              {copied ? <Check className="w-3 h-3 text-[#3ddc97]" /> : <Copy className="w-3 h-3" />}
-              <span>{copied ? "Copied" : "Copy Link"}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (isEditing) handleSaveLink();
+                  else {
+                    setEditedLink(surveyLink);
+                    setIsEditing(true);
+                  }
+                }}
+                className="text-[#5c7a8e] hover:text-[#35d0e8] flex items-center gap-1 font-mono text-[11px] transition-colors"
+                title={isEditing ? "Save link" : "Change or paste new link"}
+              >
+                {isEditing ? (
+                  <>
+                    <Save className="w-3 h-3 text-[#3ddc97]" />
+                    <span className="text-[#3ddc97]">Save</span>
+                  </>
+                ) : (
+                  <>
+                    <Edit2 className="w-3 h-3" />
+                    <span>Edit / Paste Link</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="text-[#35d0e8] hover:underline flex items-center gap-1 font-mono text-[11px]"
+              >
+                {copied ? <Check className="w-3 h-3 text-[#3ddc97]" /> : <Copy className="w-3 h-3" />}
+                <span>{copied ? "Copied" : "Copy"}</span>
+              </button>
+            </div>
           </div>
 
-          <a
-            href={surveyLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-xs font-mono text-[#35d0e8] hover:underline truncate bg-[#0c1a28] px-2.5 py-2 rounded-lg border border-[#1f5a68]/40"
-            title="Click to open survey link"
-          >
-            {surveyLink}
-          </a>
+          {isEditing ? (
+            <div className="space-y-2">
+              <input
+                type="url"
+                value={editedLink}
+                onChange={(e) => setEditedLink(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSaveLink();
+                  if (e.key === "Escape") setIsEditing(false);
+                }}
+                placeholder="Paste survey link here (e.g. https://forms.gle/...)"
+                autoFocus
+                className="w-full text-xs font-mono text-[#35d0e8] bg-[#0c1a28] px-2.5 py-2 rounded-lg border border-[#35d0e8] outline-none"
+              />
+              <div className="flex justify-end gap-2 text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="text-[#9db3c2] hover:text-[#eaf3fa]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveLink}
+                  className="text-[#3ddc97] font-bold hover:underline"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={surveyLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-xs font-mono text-[#35d0e8] hover:underline truncate bg-[#0c1a28] px-2.5 py-2 rounded-lg border border-[#1f5a68]/40"
+              title="Click to open survey link"
+            >
+              {surveyLink}
+            </a>
+          )}
         </div>
 
         {/* Primary Action Buttons */}

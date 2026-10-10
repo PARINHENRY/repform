@@ -7,6 +7,7 @@ import {
   PoseSignals,
   AnalyticsData,
   TodayStats,
+  ExerciseType,
 } from "./types";
 import { Topbar } from "./components/Topbar";
 import { LeftSidebar } from "./components/LeftSidebar";
@@ -25,6 +26,9 @@ export default function App() {
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showSurveyModal, setShowSurveyModal] = useState(true);
+
+  // Exercise Mode (Default to bicep_curl for examiner close-up laptop testing)
+  const [exercise, setExercise] = useState<ExerciseType>("bicep_curl");
 
   // User & DB Status
   const [user, setUser] = useState<User | null>(null);
@@ -211,7 +215,7 @@ export default function App() {
       }
 
       await api.saveSession({
-        exercise: "squat",
+        exercise,
         reps,
         targetReps,
         durationSeconds,
@@ -234,6 +238,25 @@ export default function App() {
     if (reps > 0) {
       saveWorkoutToMongoDB();
     }
+    setReps(0);
+    setRepScores([]);
+    setSessionStartTime(null);
+    setSessionTimeText("00:00");
+    setCalories(0);
+    sessionFlagsRef.current = {
+      valgusDetectedCount: 0,
+      forwardLeanCount: 0,
+      shallowDepthCount: 0,
+      optimalDepthCount: 0,
+    };
+  };
+
+  const handleExerciseChange = (newEx: ExerciseType) => {
+    if (newEx === exercise) return;
+    if (reps > 0) {
+      saveWorkoutToMongoDB();
+    }
+    setExercise(newEx);
     setReps(0);
     setRepScores([]);
     setSessionStartTime(null);
@@ -320,6 +343,7 @@ export default function App() {
           sessionsLoggedCount={sessionsLoggedCount}
           bestScoreEver={bestScoreEver > 0 ? bestScoreEver : null}
           user={user}
+          exercise={exercise}
           onTargetRepsChange={(newTarget) => setTargetReps(newTarget)}
           onBodyWeightChange={(newWeight) => setBodyWeightKg(newWeight)}
           onDisplayNameChange={(newName) => {
@@ -332,6 +356,8 @@ export default function App() {
 
         {/* Center: Live Pose Tracker Stage & Mini Graphs */}
         <PoseTracker
+          exercise={exercise}
+          onExerciseChange={handleExerciseChange}
           onRepComplete={handleRepComplete}
           onSignalsUpdate={() => {}}
           onFeedbackUpdate={setFeedback}
@@ -341,6 +367,7 @@ export default function App() {
 
         {/* Right Sidebar */}
         <RightSidebar
+          exercise={exercise}
           feedback={feedback}
           todayReps={totalRepsToday}
           analytics={analytics}

@@ -72,16 +72,21 @@ export interface HealthResponse {
   database: DbStatus;
 }
 
+export type ExerciseType = "squat" | "bicep_curl";
+
 export interface PoseSignals {
   kneeAngle: number;
   valgus: boolean;
   forwardLean: boolean;
   torsoAngle: number | null;
+  elbowAngle?: number;
+  exercise?: ExerciseType;
+  armTracked?: "left" | "right" | "both";
 }
 
 export interface TechniqueFeedback {
-  depth: { text: string; status: "neutral" | "good" | "warn" | "bad" };
-  knee: { text: string; status: "neutral" | "good" | "warn" | "bad" };
-  core: { text: string; status: "neutral" | "good" | "warn" | "bad" };
-  angle: { text: string; status: "neutral" | "good" | "warn" | "bad" };
+  depth: { text: string; status: "neutral" | "good" | "warn" | "bad"; label?: string };
+  knee: { text: string; status: "neutral" | "good" | "warn" | "bad"; label?: string };
+  core: { text: string; status: "neutral" | "good" | "warn" | "bad"; label?: string };
+  angle: { text: string; status: "neutral" | "good" | "warn" | "bad"; label?: string };
 }

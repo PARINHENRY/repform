@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../types";
+import { User, ExerciseType } from "../types";
 import { UserCheck, Target, Flame, Timer, Award } from "lucide-react";
 
 interface LeftSidebarProps {
@@ -12,6 +12,7 @@ interface LeftSidebarProps {
   sessionsLoggedCount: number;
   bestScoreEver: number | null;
   user: User | null;
+  exercise?: ExerciseType;
   onTargetRepsChange: (newTarget: number) => void;
   onBodyWeightChange: (newWeight: number) => void;
   onDisplayNameChange: (newName: string) => void;
@@ -28,6 +29,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   sessionsLoggedCount,
   bestScoreEver,
   user,
+  exercise = "bicep_curl",
   onTargetRepsChange,
   onBodyWeightChange,
   onDisplayNameChange,
@@ -48,7 +50,9 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
         <div className="space-y-2.5">
           <div className="flex items-baseline justify-between py-1.5 border-b border-[#1a3448]">
             <span className="text-xs text-[#9db3c2]">Exercise</span>
-            <span className="font-display font-semibold text-base text-[#eaf3fa]">Barbell / Bodyweight Squat</span>
+            <span className="font-display font-semibold text-sm text-[#eaf3fa] text-right">
+              {exercise === "bicep_curl" ? "Desk Bicep Curls (Seated)" : "Bodyweight Squat"}
+            </span>
           </div>
 
           <div className="flex items-baseline justify-between py-1.5 border-b border-[#1a3448]">
@@ -73,22 +77,29 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
           <div className="flex items-baseline justify-between py-1.5 border-b border-[#1a3448]">
             <span className="text-xs text-[#9db3c2] flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-[#f5a83c]" />
-              Correctness
+              <Award className="w-3.5 h-3.5 text-[#3ddc97]" />
+              Form Accuracy
             </span>
-            <span
-              className={`font-display font-bold text-lg ${
-                avgScore === null
-                  ? "text-[#5c7a8e]"
-                  : avgScore >= 80
-                  ? "text-[#3ddc97]"
-                  : avgScore >= 60
-                  ? "text-[#f5a83c]"
-                  : "text-[#ef6461]"
-              }`}
-            >
-              {avgScore !== null ? `${avgScore}%` : "—"}
-            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span
+                className={`font-display font-bold text-lg ${
+                  avgScore === null
+                    ? "text-[#5c7a8e]"
+                    : avgScore >= 88
+                    ? "text-[#3ddc97]"
+                    : avgScore >= 75
+                    ? "text-[#f5a83c]"
+                    : "text-[#ef6461]"
+                }`}
+              >
+                {avgScore !== null ? `${avgScore}%` : "—"}
+              </span>
+              {avgScore !== null && avgScore >= 90 && (
+                <span className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-[#3ddc97]/15 text-[#3ddc97] border border-[#3ddc97]/30">
+                  HIGH
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="flex items-baseline justify-between py-1.5 border-b border-[#1a3448]">
